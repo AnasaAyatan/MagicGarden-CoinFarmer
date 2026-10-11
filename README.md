@@ -4,6 +4,8 @@ A farming assistant project for Magic Garden, focused on earning spendable Coins
 
 ## Development status
 
+Version 0.2.0 adds a standalone companion for use alongside Discord desktop. See the instructions below.
+
 Version 0.1.0 includes an installable userscript with a manual Coin session tracker and crop-profit calculator. JavaScript syntax has been checked; live game and Discord browser testing is still needed. It does not automatically read game data, harvest, plant, or sell.
 
 ## Features and roadmap
@@ -15,6 +17,26 @@ Version 0.1.0 includes an installable userscript with a manual Coin session trac
 
 This project does not grant unlimited Coins or modify server balances. Donuts and Magic Dust are outside its scope.
 
+## Discord desktop companion (v0.2.0)
+
+You can keep playing Magic Garden in the Discord desktop app and open this companion alongside it. No Tampermonkey is needed for the companion.
+
+1. Use **Code → Download ZIP** on this repository and extract the ZIP.
+2. Open `companion.html` in Microsoft Edge.
+3. Resize the window and place it beside Discord.
+
+Optional: right-click `Launch-Companion.ps1` and select **Run with PowerShell** to open a separate Edge app window without the normal address bar. Keep it in the same folder as `companion.html`. If Windows blocks the launcher, open the HTML file directly; changing execution policy is unnecessary.
+
+### Companion features and limits
+
+- Manual session tracking with net Coin change and estimated Coins/hour.
+- Crop-profit estimates using your entered prices and harvest intervals.
+- Session storage in your browser when local storage is available. Keep the file at the same path and use the same browser/profile to retain records; moving it or clearing browser data can lose records.
+- Works independently alongside the Discord app; it does not connect to Discord or read the game.
+- No automatic harvesting, planting, selling, or unlimited Coins.
+- No always-on-top behavior; arrange the windows side by side.
+- JavaScript syntax checked. Windows launcher and live browser rendering still require user testing.
+
 ## Platform plan
 
 The script runs through Tampermonkey or Violentmonkey.
@@ -23,7 +45,7 @@ The script runs through Tampermonkey or Violentmonkey.
 | --- | --- |
 | Magic Garden in a browser | URL matching included; live testing pending |
 | Discord Activity in a browser | Activity frame URL matching included; live testing pending |
-| Discord desktop app | Unsupported by the planned browser userscript |
+| Discord desktop app | Standalone manual companion available; embedded userscript unsupported |
 | Discord mobile app | Unsupported by the planned browser userscript |
 
 For Discord play, use Discord in Chrome, Edge, or Firefox. Browser extensions cannot be installed inside the Discord desktop app.
