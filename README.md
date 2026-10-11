@@ -53,6 +53,13 @@ Use [GitHub Issues](https://github.com/AnasaAyatan/MagicGarden-CoinFarmer/issues
 
 ## License
 
-[MIT](LICENSE), copyright 2026 AnasaAyatan.
+Copyright 2026 AnasaAyatan. Licensed under the custom [Personal Use License](LICENSE).
+
+- Free to download, install, and use personally for non-commercial purposes.
+- Prior written permission is required for modifications (including private changes), redistribution, sharing copies, or selling/commercial use.
+- Changing built-in settings and sharing links to this repository are allowed.
+- Request permission through [GitHub Issues](https://github.com/AnasaAyatan/MagicGarden-CoinFarmer/issues); wait for explicit written approval.
+
+This is not an open-source license. GitHub's rights for viewing and forking public repositories and applicable statutory rights still apply. Copies previously released under MIT retain their original permissions.
 
 Independent community project; not affiliated with Magic Garden or Discord.
