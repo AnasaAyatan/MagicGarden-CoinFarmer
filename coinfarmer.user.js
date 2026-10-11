@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         MagicGarden CoinFarmer
 // @namespace    https://github.com/AnasaAyatan/MagicGarden-CoinFarmer
-// @version      0.1.0
-// @description  Manual Coin session tracker and crop-profit calculator.
+// @version      0.3.0
+// @description  Experimental live Coin tracking and crop-profit calculator.
 // @author       AnasaAyatan
 // @license      Custom Personal Use License; see repository LICENSE
 // @match        https://magicgarden.gg/*
 // @include      /^https:\/\/1227719606223765687\.discordsays\.com\/.*[?&]mc_shell_frame=1(&|#|$)/
 // @run-at       document-idle
+// @grant        unsafeWindow
 // @grant        GM_getValue
 // @grant        GM_setValue
 // ==/UserScript==
@@ -31,9 +32,9 @@
     output {display:block;white-space:pre-line;margin:12px 0;line-height:1.5}
     .muted {color:#bbd0c0;font-size:12px} [hidden] {display:none!important}
   </style><section>
-    <header><h2>CoinFarmer 0.1.0</h2><button id="toggle" aria-expanded="true">Minimize</button></header>
-    <main><p class="muted">Manual input only. No automatic harvesting or balance changes.</p>
-    <label>Current Coins (full number)<input id="balance" type="number" min="0" step="1" placeholder="22140000000"></label>
+    <header><h2>CoinFarmer 0.3.0</h2><button id="toggle" aria-expanded="true">Minimize</button></header>
+    <main><p class="muted">Automatic read-only tracking when connected. No harvesting or balance changes.</p>
+    <output id="connection" aria-live="polite">Waiting for game data…</output><label>Current Coins (full number)<input id="balance" type="number" min="0" step="1" placeholder="22140000000"></label>
     <button id="start">Start new session</button> <button id="record">Record balance</button>
     <output id="session" aria-live="polite"></output>
     <p class="muted">Balance change is net income: spending reduces it. Rate is an estimate.</p>
@@ -70,7 +71,7 @@
     return n;
   }
   function save() {
-    try { GM_setValue('coinfarmer.session', session); }
+    try { GM_setValue(live && activeAccount ? 'coinfarmer.live.' + activeAccount : 'coinfarmer.session', session); }
     catch { get('message').textContent = 'Could not save; keep this page open to retain the session.'; }
     render();
   }
@@ -108,5 +109,124 @@
     get('toggle').textContent = main.hidden ? 'Open' : 'Minimize';
     get('toggle').setAttribute('aria-expanded', String(!main.hidden));
   };
+
+  const page = typeof unsafeWindow !== 'undefined' ? unsafeWindow : window;
+  let reader = null;
+  let captureActive = false;
+  let nextAttempt = 0;
+  let activeAccount = null;
+  let live = false;
+  let lastSaved = 0;
+  let restoreCapture = () => {};
+  function atomByName(name) {
+    const cache = page.jotaiAtomCache?.cache;
+    if (!cache || typeof cache.entries !== 'function') return null;
+    for (const [key, atom] of cache.entries()) {
+      if (atom && (atom.debugLabel === name || atom.label === name ||
+          (typeof key === 'string' && key.endsWith('/' + name)))) return atom;
+    }
+    return null;
+  }
+  function accountId(player) {
+    for (const key of ['userId', 'discordUserId', 'databaseUserId', 'id']) {
+      const v = player?.[key];
+      if (typeof v === 'string' && v && !v.startsWith('p_')) return v;
+      if (typeof v === 'number' && Number.isSafeInteger(v) && v >= 0) return String(v);
+    }
+    return null;
+  }
+  function validCoins(data) {
+    const value = data?.coinsCount ?? data?.coins;
+    return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 ? value : null;
+  }
+  // Capture the game's getter on its next normal atom write. Never call its setter.
+  function attemptCapture() {
+    if (captureActive || Date.now() < nextAttempt) return;
+    const cache = page.jotaiAtomCache?.cache;
+    if (!cache || typeof cache.values !== 'function') return;
+    captureActive = true;
+    nextAttempt = Date.now() + 30000;
+    const patches = [];
+    let timeout;
+    restoreCapture = () => {
+      clearTimeout(timeout);
+      for (const [atom, original, wrapper] of patches) {
+        try { if (atom.write === wrapper) atom.write = original; } catch {}
+      }
+      patches.length = 0;
+      captureActive = false;
+    };
+    for (const atom of cache.values()) {
+      if (!atom || typeof atom.write !== 'function' || patches.length >= 5000) continue;
+      const original = atom.write;
+      const wrapper = function(getter, ...args) {
+        if (typeof getter === 'function') {
+          reader = getter;
+          restoreCapture();
+        }
+        return Reflect.apply(original, this, [getter, ...args]);
+      };
+      try {
+        atom.write = wrapper;
+        if (atom.write === wrapper) patches.push([atom, original, wrapper]);
+      } catch {}
+    }
+    timeout = setTimeout(restoreCapture, 8000);
+  }
+  function setLiveControls(connected) {
+    live = connected;
+    get('balance').readOnly = connected;
+    get('record').disabled = connected;
+    get('record').textContent = connected ? 'Recording automatically' : 'Record balance';
+  }
+  function pollLive() {
+    try {
+      if (!reader) attemptCapture();
+      const dataAtom = atomByName('myDataAtom');
+      const playerAtom = atomByName('playerAtom');
+      const player = reader && playerAtom ? reader(playerAtom) : null;
+      const id = accountId(player);
+      const coins = reader && dataAtom ? validCoins(reader(dataAtom)) : null;
+      if (id === null || coins === null) {
+        setLiveControls(false);
+        get('connection').textContent = 'Not connected: waiting for your game data. Move your character after loading. Manual mode remains available.';
+        return;
+      }
+      if (activeAccount !== id) {
+        activeAccount = id;
+        // Never carry another account's tracking baseline into this account.
+        try {
+          const saved = GM_getValue('coinfarmer.live.' + id, null);
+          session = saved && Number.isSafeInteger(saved.start) && saved.start >= 0 &&
+            Number.isSafeInteger(saved.current) && saved.current >= 0 &&
+            Number.isFinite(saved.time) && saved.time > 0 && saved.time <= Date.now() &&
+            Number.isFinite(saved.recorded) && saved.recorded >= saved.time ? saved : null;
+        } catch { session = null; }
+        lastSaved = 0;
+      }
+      const now = Date.now();
+      const changed = session?.current !== coins;
+      if (!session) session = {start:coins,current:coins,time:now,recorded:now};
+      session.current = coins;
+      session.recorded = now;
+      setLiveControls(true);
+      get('balance').value = String(coins);
+      get('connection').textContent = 'Connected · live local-player balance · ' + new Date(now).toLocaleTimeString();
+      render();
+      if (changed || now - lastSaved >= 15000) { save(); lastSaved = now; }
+    } catch {
+      setLiveControls(false);
+      reader = null;
+      get('connection').textContent = 'Connection unavailable; retrying. Manual mode remains available.';
+    }
+  }
+  const pollTimer = setInterval(pollLive, 1000);
+  window.addEventListener('pagehide', () => {
+    restoreCapture();
+    clearInterval(pollTimer);
+  }, {once:true});
+  pollLive();
+
   render();
 })();
+
