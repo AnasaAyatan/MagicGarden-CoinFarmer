@@ -4,9 +4,11 @@ A farming assistant project for Magic Garden, focused on earning spendable Coins
 
 ## Development status
 
+Version 0.3.0 adds experimental automatic balance tracking to the browser userscript. It reads the game's local-player data once per second, starts a tracking session when connected, and separates sessions by account. Syntax and mocked integration checks passed; live game testing is pending.
+
 Version 0.2.0 adds a standalone companion for use alongside Discord desktop. See the instructions below.
 
-Version 0.1.0 includes an installable userscript with a manual Coin session tracker and crop-profit calculator. JavaScript syntax has been checked; live game and Discord browser testing is still needed. It does not automatically read game data, harvest, plant, or sell.
+The browser userscript includes a crop-profit calculator and manual fallback. It does not harvest, plant, or sell.
 
 ## Features and roadmap
 
@@ -59,17 +61,27 @@ git clone https://github.com/AnasaAyatan/MagicGarden-CoinFarmer.git
 cd MagicGarden-CoinFarmer
 ```
 
-### Install version 0.1.0
+### Install browser userscript version 0.3.0
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) in Chrome/Edge or [Violentmonkey](https://violentmonkey.github.io/) in Firefox.
 2. Open [coinfarmer.user.js](https://github.com/AnasaAyatan/MagicGarden-CoinFarmer/blob/main/coinfarmer.user.js), select **Raw**, and accept the userscript manager's installation prompt. If no prompt appears, create a new script in the manager and paste the complete file contents.
 3. If Tampermonkey is blocked, enable **Allow user scripts** in its browser extension details, or Developer mode if required by your browser.
 4. Reload Magic Garden on its website or launch its Activity through [Discord in your browser](https://discord.com/app).
-5. Look for the **CoinFarmer 0.1.0** panel at the top right.
+5. Look for the **CoinFarmer 0.3.0** panel at the top right.
 
 The Discord desktop/mobile apps cannot run this browser extension. If the panel does not appear, report your browser and whether you used the website or Discord; both targets still need live testing.
 
-### Using the panel
+### Automatic tracking
+
+After installation, reload the game and move your character. Look for **Connected · live local-player balance**. The script starts a session and records your balance automatically; **Start new session** resets the baseline. If it says **Not connected**, it has not verified your balance and leaves manual mode available. Do not assume a connection from the presence of the overlay alone.
+
+The script reads `myDataAtom` and requires a stable identity from `playerAtom`. It briefly wraps normal atom writes to capture the game's getter, restores those wrappers, and never invokes the game's setter. It does not send game commands or transmit balances to external services. Game updates can break this experimental integration.
+
+Technical field names were researched using [the existing mod's atom registry](https://github.com/Ariedam64/MG-AriesMod/blob/main/src/game/store/atoms.ts) and [player payload documentation in its source](https://github.com/Ariedam64/MG-AriesMod/blob/main/src/platform/ariesApi/playerStatePayload.ts). This userscript uses its own implementation and does not require that mod.
+
+The standalone Discord desktop companion remains manual. Automatic tracking requires the game to run in the browser where the userscript is installed.
+
+### Manual fallback and calculator
 
 - Enter your full Coin balance using digits (for example, `22140000000`, rather than `22.14B`) and select **Start new session**.
 - After playing, enter the new balance and select **Record balance**. Spending reduces net income; this is not a separate earnings/spending ledger.
