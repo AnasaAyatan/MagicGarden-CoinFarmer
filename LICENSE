@@ -1,21 +1,58 @@
-MIT License
+MagicGarden-CoinFarmer Personal Use License
+Version 1.0
 
-Copyright (c) 2026 AnasaAyatan
+Copyright (c) 2026 AnasaAyatan. All rights reserved except as expressly
+granted below.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Free personal use
+The copyright holder grants you a non-exclusive, worldwide, royalty-free
+license to download, install, run, and make copies of this software and its
+accompanying documentation (the "Software") solely for your own personal,
+non-commercial use. You may keep personal backup copies. Ordinary use of
+settings exposed by the Software is permitted and is not a modification
+for purposes of this license.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+2. Permission required
+Except as permitted in Section 1, you must obtain prior written permission
+from AnasaAyatan before:
+- Modifying, adapting, translating, or creating derivative works of the
+  Software, including changes made only for private use;
+- Redistributing, reuploading, publishing, sharing, or sublicensing copies
+  of the Software, whether modified or unmodified; or
+- Selling the Software, charging for access to it, bundling it in a paid
+  product or service, or otherwise using it commercially.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+You may share a link to the official repository without seeking permission.
+
+3. Notices
+Retain this license and all copyright notices in any permitted copies.
+No ownership of the Software is transferred to you.
+
+4. GitHub and statutory rights
+Nothing in this license limits rights granted independently by GitHub's
+Terms of Service for viewing and forking a public repository within GitHub,
+or rights and exceptions that applicable law does not permit this license
+to restrict. Those rights do not constitute a general grant to modify,
+redistribute outside those terms, or sell the Software.
+
+5. Earlier releases and third-party materials
+These terms apply to versions distributed with this license. They do not
+revoke rights already granted for copies previously released under MIT or
+another license. Separately licensed third-party materials remain governed
+by their respective licenses.
+
+6. Permission requests
+Request permission by opening an issue in the official repository:
+https://github.com/AnasaAyatan/MagicGarden-CoinFarmer/issues
+Submitting a request is not permission. Permission must be explicitly
+granted in writing by AnasaAyatan and covers only the stated scope.
+
+7. Disclaimer
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS PROVIDED
+"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE
+LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF,
+OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+This is a custom personal-use license, not an open-source license.
