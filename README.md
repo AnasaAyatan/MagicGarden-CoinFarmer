@@ -4,25 +4,25 @@ A farming assistant project for Magic Garden, focused on earning spendable Coins
 
 ## Development status
 
-Initial project setup. There is no installable userscript or working farming automation yet. Features below are planned, and game integration still needs to be researched and tested.
+Version 0.1.0 includes an installable userscript with a manual Coin session tracker and crop-profit calculator. JavaScript syntax has been checked; live game and Discord browser testing is still needed. It does not automatically read game data, harvest, plant, or sell.
 
-## Planned features
+## Features and roadmap
 
-- Track Coins earned and spent during a session.
-- Compare crop profits using purchase cost, sale value, and growth time.
-- Show harvest reminders and farming recommendations.
+- Available: manually record balances to track net Coin changes and estimated Coins/hour.
+- Available: calculate estimated profit per harvest and per hour from entered seed costs, total harvest sale values, harvest intervals, and plot counts.
+- Planned: harvest reminders and farming recommendations.
 - Explore user-controlled farming assistance after verifying the game's integration points.
 
 This project does not grant unlimited Coins or modify server balances. Donuts and Magic Dust are outside its scope.
 
 ## Platform plan
 
-The first implementation is planned as a JavaScript userscript for Tampermonkey or Violentmonkey.
+The script runs through Tampermonkey or Violentmonkey.
 
 | Platform | Project status |
 | --- | --- |
-| Magic Garden in a browser | Planned; untested |
-| Discord Activity in a browser | Planned; frame matching and integration need testing |
+| Magic Garden in a browser | URL matching included; live testing pending |
+| Discord Activity in a browser | Activity frame URL matching included; live testing pending |
 | Discord desktop app | Unsupported by the planned browser userscript |
 | Discord mobile app | Unsupported by the planned browser userscript |
 
@@ -37,7 +37,29 @@ git clone https://github.com/AnasaAyatan/MagicGarden-CoinFarmer.git
 cd MagicGarden-CoinFarmer
 ```
 
-Currently, this repository contains project documentation and configuration only. There are no build commands, dependencies, or installation steps for a mod yet.
+### Install version 0.1.0
+
+1. Install [Tampermonkey](https://www.tampermonkey.net/) in Chrome/Edge or [Violentmonkey](https://violentmonkey.github.io/) in Firefox.
+2. Open [coinfarmer.user.js](https://github.com/AnasaAyatan/MagicGarden-CoinFarmer/blob/main/coinfarmer.user.js), select **Raw**, and accept the userscript manager's installation prompt. If no prompt appears, create a new script in the manager and paste the complete file contents.
+3. If Tampermonkey is blocked, enable **Allow user scripts** in its browser extension details, or Developer mode if required by your browser.
+4. Reload Magic Garden on its website or launch its Activity through [Discord in your browser](https://discord.com/app).
+5. Look for the **CoinFarmer 0.1.0** panel at the top right.
+
+The Discord desktop/mobile apps cannot run this browser extension. If the panel does not appear, report your browser and whether you used the website or Discord; both targets still need live testing.
+
+### Using the panel
+
+- Enter your full Coin balance using digits (for example, `22140000000`, rather than `22.14B`) and select **Start new session**.
+- After playing, enter the new balance and select **Record balance**. Spending reduces net income; this is not a separate earnings/spending ledger.
+- Enter seed cost per planting, total sale value per harvest, minutes between harvests, and plot count, then select **Calculate profit**.
+- For regrowing crops, uncheck **Pay seed cost every harvest**. The recurring estimate then excludes initial planting costs.
+- **Minimize** collapses the panel. Session records persist through userscript-manager storage when available. The calculator uses your inputs, not a built-in crop or mutation database.
+
+No build step or dependency installation is required. To check syntax locally with Node.js:
+
+```bash
+node --check coinfarmer.user.js
+```
 
 ## Development roadmap
 
